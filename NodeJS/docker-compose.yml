@@ -1,0 +1,31 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    image: api-chatcosey/app:latest  # Nom explicite pour l'image
+    container_name: api-chatcosey-app  # Nom explicite du conteneur
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - NODE_ENV=development
+      - DATABASE=mongodb://mongo:27017/chatcosey
+      - NEW_RELIC_APP_NAME=api-chatcosey-relic
+      - NEW_RELIC_LICENSE_KEY=eu01xx7b90e69dc1eb0db04fcae72586FFFFNRAL
+      - NEW_RELIC_LOG_LEVEL=info
+    depends_on:
+      - mongo
+    command: npm start
+
+  mongo:
+    container_name: api-chatcosey-mongo  # Nom explicite du conteneur MongoDB
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/db:/data/db
+
+networks:
+  default:
+    name: api-chatcosey-network  # Nom du réseau
